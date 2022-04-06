@@ -28,7 +28,7 @@
             <Button Content="Pixelation" Click="Pixelation_Click"></Button>
             <Button Content="Kuvahara" Click="Kuvahara_Click"></Button>
             <Button Content="Predator" Click="Predator_Click"></Button>
-            <Slider x:Name="Range" Maximum="98" Minimum="2" Value="2" LargeChange="3" TickFrequency="3" TickPlacement="BottomRight" IsSnapToTickEnabled="True" ></Slider>
+            <Slider x:Name="Range" Maximum="40" Minimum="2" Value="2" LargeChange="2" TickFrequency="2" TickPlacement="BottomRight" IsSnapToTickEnabled="True" ></Slider>
 
         </StackPanel>
         <Image Name="SourceImage" Grid.Column="0"></Image>
