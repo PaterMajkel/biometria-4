@@ -337,11 +337,11 @@ public static class Algorithm
                 byte G = vs[i * bitmap.Width * 3 + j + 1];
                 byte B = vs[i * bitmap.Width * 3 + j + 2];
                 var min = Math.Min(R, Math.Min(G, B));
-                if (R > min)
+                if (R != min)
                     R = 0; 
-                if (G > min)
+                if (G != min)
                     G = 0; 
-                if (B > min)
+                if (B != min)
                     B = 0;
                 vs[i * bitmap.Width * 3 + j] = R;
                 vs[i * bitmap.Width * 3 + j + 1] = G;
