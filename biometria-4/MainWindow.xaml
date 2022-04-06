@@ -20,12 +20,14 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Grid.Column="2" VerticalAlignment="Center">
-            <Button Content="Gaussian"></Button>
-            <Button Content="Sobel"></Button>
-            <Button Content="Median" Click="Median_Click"></Button>
+            <Button Content="Gaussian" Click="Gaussian_Click"></Button>
+            <Button Content="Sobel" Click="Sobel_Click"></Button>
+                <Button Content="Prewitt" Click="Prewitt_Click"></Button>
+                <Button Content="Laplacian" Click="Laplacian_Click"></Button>
+                <Button Content="Median" Click="Median_Click"></Button>
             <Button Content="Pixelation" Click="Pixelation_Click"></Button>
-            <Button Content="Kuvahar"></Button>
-            <Button Content="Predator"></Button>
+            <Button Content="Kuvahara" Click="Kuvahara_Click"></Button>
+            <Button Content="Predator" Click="Predator_Click"></Button>
             <Slider x:Name="Range" Maximum="98" Minimum="2" Value="2" LargeChange="3" TickFrequency="3" TickPlacement="BottomRight" IsSnapToTickEnabled="True" ></Slider>
 
         </StackPanel>
