@@ -246,83 +246,226 @@ public static class Algorithm
 
         return new byte[] { (byte)(allR / input.Count), (byte)(allG / input.Count), (byte)(allB / input.Count) };
     }
+    //public static Bitmap Kuvahara(Bitmap bitmap, int pixelSize)
+    //{
+    //    BitmapData data = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
+    //    byte[] vs = new byte[data.Height * data.Stride];
+    //    Marshal.Copy(data.Scan0, vs, 0, vs.Length);
+
+    //    for (int i = pixelSize; i < bitmap.Height; i += pixelSize)
+    //    {
+    //        for (int j = pixelSize * 3; j < bitmap.Width * 3; j += pixelSize * 3)
+    //        {
+    //            if ((i + pixelSize / 2) * bitmap.Width * 3 + j + pixelSize * 3 / 2 + 2 >= vs.Length)
+    //                break;
+    //            List<byte[]> quadrant1 = new();
+    //            List<byte[]> quadrant2 = new();
+    //            List<byte[]> quadrant3 = new();
+    //            List<byte[]> quadrant4 = new();
+    //            for (int k = i - pixelSize; k <= i + pixelSize; k++)
+    //            {
+    //                for (int l = j - pixelSize * 3; l <= j + pixelSize * 3; l += 3)
+    //                {
+    //                    if (k * bitmap.Width * 3 + l + 2 > vs.Length)
+    //                        break;
+    //                    //mogłem coś tutaj zepsuć
+    //                    if (k <= i && l <= j)
+    //                        quadrant1.Add(new byte[] { vs[k * bitmap.Width * 3 + l], vs[k * bitmap.Width * 3 + l + 1], vs[k * bitmap.Width * 3 + l + 2] });
+    //                    else if (k <= i && l >= j)
+    //                        quadrant2.Add(new byte[] { vs[k * bitmap.Width * 3 + l], vs[k * bitmap.Width * 3 + l + 1], vs[k * bitmap.Width * 3 + l + 2] });
+    //                    else if (k >= i && l <= j)
+    //                        quadrant3.Add(new byte[] { vs[k * bitmap.Width * 3 + l], vs[k * bitmap.Width * 3 + l + 1], vs[k * bitmap.Width * 3 + l + 2] });
+    //                    else if (k >= i && l >= j)
+    //                        quadrant4.Add(new byte[] { vs[k * bitmap.Width * 3 + l], vs[k * bitmap.Width * 3 + l + 1], vs[k * bitmap.Width * 3 + l + 2] });
+
+    //                }
+    //            }
+
+    //            List<double> stds = new List<double>();
+    //            stds.Add(GetDeviation(quadrant1, new byte[] { vs[i * bitmap.Width * 3 + j], vs[i * bitmap.Width * 3 + j + 1], vs[i * bitmap.Width * 3 + j + 2] }));
+    //            stds.Add(GetDeviation(quadrant2, new byte[] { vs[i * bitmap.Width * 3 + j], vs[i * bitmap.Width * 3 + j + 1], vs[i * bitmap.Width * 3 + j + 2] }));
+    //            stds.Add(GetDeviation(quadrant3, new byte[] { vs[i * bitmap.Width * 3 + j], vs[i * bitmap.Width * 3 + j + 1], vs[i * bitmap.Width * 3 + j + 2] }));
+    //            stds.Add(GetDeviation(quadrant4, new byte[] { vs[i * bitmap.Width * 3 + j], vs[i * bitmap.Width * 3 + j + 1], vs[i * bitmap.Width * 3 + j + 2] }));
+
+    //            var index = stds.IndexOf(stds.Min());
+    //            byte[] avrg = new byte[3];
+    //            switch (index)
+    //            {
+    //                case 0:
+    //                    avrg = GetAvarage(quadrant1);
+    //                    vs[i * bitmap.Width * 3 + j] = avrg[0];
+    //                    vs[i * bitmap.Width * 3 + j] = avrg[1];
+    //                    vs[i * bitmap.Width * 3 + j] = avrg[2];
+    //                    break;
+    //                case 1:
+    //                    avrg = GetAvarage(quadrant2);
+    //                    vs[i * bitmap.Width * 3 + j] = avrg[0];
+    //                    vs[i * bitmap.Width * 3 + j] = avrg[1];
+    //                    vs[i * bitmap.Width * 3 + j] = avrg[2];
+    //                    break;
+    //                case 2:
+    //                    avrg = GetAvarage(quadrant3);
+    //                    vs[i * bitmap.Width * 3 + j] = avrg[0];
+    //                    vs[i * bitmap.Width * 3 + j] = avrg[1];
+    //                    vs[i * bitmap.Width * 3 + j] = avrg[2];
+    //                    break;
+    //                case 3:
+    //                    avrg = GetAvarage(quadrant4);
+    //                    vs[i * bitmap.Width * 3 + j] = avrg[0];
+    //                    vs[i * bitmap.Width * 3 + j] = avrg[1];
+    //                    vs[i * bitmap.Width * 3 + j] = avrg[2];
+    //                    break;
+    //            }
+    //        }
+    //    }
+    //    Marshal.Copy(vs, 0, data.Scan0, vs.Length);
+    //    bitmap.UnlockBits(data);
+
+    //    return bitmap;
+    //}
+
     public static Bitmap Kuvahara(Bitmap bitmap, int pixelSize)
     {
         BitmapData data = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
         byte[] vs = new byte[data.Height * data.Stride];
         Marshal.Copy(data.Scan0, vs, 0, vs.Length);
-
-        for (int i = pixelSize; i < bitmap.Height; i += pixelSize)
-        {
-            for (int j = pixelSize * 3; j < bitmap.Width * 3; j += pixelSize * 3)
+        byte[] vs1 = new byte[vs.Length];
+        for (int y = 0; y < data.Height; ++y)
+            for (int x = 0; x < data.Stride; x += 3)
             {
-                if ((i + pixelSize / 2) * bitmap.Width * 3 + j + pixelSize * 3 / 2 + 2 >= vs.Length)
-                    break;
-                List<byte[]> quadrant1 = new();
-                List<byte[]> quadrant2 = new();
-                List<byte[]> quadrant3 = new();
-                List<byte[]> quadrant4 = new();
-                for (int k = i - pixelSize; k <= i + pixelSize; k++)
+                List<byte> upLeft = new List<byte>();
+                List<byte> upRight = new List<byte>();
+                List<byte> downLeft = new List<byte>();
+                List<byte> downRight = new List<byte>();
+                for (int z = y - pixelSize; z <= y + pixelSize; ++z)
                 {
-                    for (int l = j - pixelSize * 3; l <= j + pixelSize * 3; l += 3)
+                    if (z >= 0 && z < data.Height)
                     {
-                        if (k * bitmap.Width * 3 + l + 2 > vs.Length)
-                            break;
-                        //mogłem coś tutaj zepsuć
-                        if (k <= i && l <= j)
-                            quadrant1.Add(new byte[] { vs[k * bitmap.Width * 3 + l], vs[k * bitmap.Width * 3 + l + 1], vs[k * bitmap.Width * 3 + l + 2] });
-                        else if (k <= i && l >= j)
-                            quadrant2.Add(new byte[] { vs[k * bitmap.Width * 3 + l], vs[k * bitmap.Width * 3 + l + 1], vs[k * bitmap.Width * 3 + l + 2] });
-                        else if (k >= i && l <= j)
-                            quadrant3.Add(new byte[] { vs[k * bitmap.Width * 3 + l], vs[k * bitmap.Width * 3 + l + 1], vs[k * bitmap.Width * 3 + l + 2] });
-                        else if (k >= i && l >= j)
-                            quadrant4.Add(new byte[] { vs[k * bitmap.Width * 3 + l], vs[k * bitmap.Width * 3 + l + 1], vs[k * bitmap.Width * 3 + l + 2] });
+                        for (int i = x - pixelSize * 3; i <= x + pixelSize * 3; i += 3)
+                        {
+                            if (i >= 0 && i < data.Stride)
+                            {
+                                if (z <= y)
+                                {
+                                    if (i <= x)
+                                    {
+                                        upLeft.Add(vs[z * data.Stride + i]);
+                                        upLeft.Add(vs[z * data.Stride + i + 1]);
+                                        upLeft.Add(vs[z * data.Stride + i + 2]);
+                                    }
+                                    if (i >= x)
+                                    {
+                                        upRight.Add(vs[z * data.Stride + i]);
+                                        upRight.Add(vs[z * data.Stride + i + 1]);
+                                        upRight.Add(vs[z * data.Stride + i + 2]);
+                                    }
+                                }
+                                if (z >= y)
+                                {
+                                    if (i <= x)
+                                    {
+                                        downLeft.Add(vs[z * data.Stride + i]);
+                                        downLeft.Add(vs[z * data.Stride + i + 1]);
+                                        downLeft.Add(vs[z * data.Stride + i + 2]);
+                                    }
+                                    if (i >= x)
+                                    {
+                                        downRight.Add(vs[z * data.Stride + i]);
+                                        downRight.Add(vs[z * data.Stride + i + 1]);
+                                        downRight.Add(vs[z * data.Stride + i + 2]);
+                                    }
+                                }
 
+                            }
+                        }
+                        
                     }
+                    
                 }
+                double[] deviations = new double[4];
+                deviations[0] = getDeviation(upLeft);
+                deviations[1] = getDeviation(upRight);
+                deviations[2] = getDeviation(downLeft);
+                deviations[3] = getDeviation(downRight);
+                byte[] avgR = new byte[4];
+                byte[] avgG = new byte[4];
+                byte[] avgB = new byte[4];
+                int sumR = 0, sumG = 0, sumB = 0;
+                int xd = 0;
 
-                List<double> stds = new List<double>();
-                stds.Add(GetDeviation(quadrant1, new byte[] { vs[i * bitmap.Width * 3 + j], vs[i * bitmap.Width * 3 + j + 1], vs[i * bitmap.Width * 3 + j + 2] }));
-                stds.Add(GetDeviation(quadrant2, new byte[] { vs[i * bitmap.Width * 3 + j], vs[i * bitmap.Width * 3 + j + 1], vs[i * bitmap.Width * 3 + j + 2] }));
-                stds.Add(GetDeviation(quadrant3, new byte[] { vs[i * bitmap.Width * 3 + j], vs[i * bitmap.Width * 3 + j + 1], vs[i * bitmap.Width * 3 + j + 2] }));
-                stds.Add(GetDeviation(quadrant4, new byte[] { vs[i * bitmap.Width * 3 + j], vs[i * bitmap.Width * 3 + j + 1], vs[i * bitmap.Width * 3 + j + 2] }));
-
-                var index = stds.IndexOf(stds.Min());
-                byte[] avrg = new byte[3];
-                switch (index)
+                for (int i = 0; i < upLeft.Count; i += 3)
                 {
-                    case 0:
-                        avrg = GetAvarage(quadrant1);
-                        vs[i * bitmap.Width * 3 + j] = avrg[0];
-                        vs[i * bitmap.Width * 3 + j] = avrg[1];
-                        vs[i * bitmap.Width * 3 + j] = avrg[2];
-                        break;
-                    case 1:
-                        avrg = GetAvarage(quadrant2);
-                        vs[i * bitmap.Width * 3 + j] = avrg[0];
-                        vs[i * bitmap.Width * 3 + j] = avrg[1];
-                        vs[i * bitmap.Width * 3 + j] = avrg[2];
-                        break;
-                    case 2:
-                        avrg = GetAvarage(quadrant3);
-                        vs[i * bitmap.Width * 3 + j] = avrg[0];
-                        vs[i * bitmap.Width * 3 + j] = avrg[1];
-                        vs[i * bitmap.Width * 3 + j] = avrg[2];
-                        break;
-                    case 3:
-                        avrg = GetAvarage(quadrant4);
-                        vs[i * bitmap.Width * 3 + j] = avrg[0];
-                        vs[i * bitmap.Width * 3 + j] = avrg[1];
-                        vs[i * bitmap.Width * 3 + j] = avrg[2];
-                        break;
+                    sumR += upLeft[i];
+                    sumG += upLeft[i + 1];
+                    sumB += upLeft[i + 2];
                 }
+                avgR[0] = (byte)(sumR / (upLeft.Count / 3));
+                avgG[0] = (byte)(sumG / (upLeft.Count / 3));
+                avgB[0] = (byte)(sumB / (upLeft.Count / 3));
+                sumR = sumG = sumB = 0;
+
+                for (int i = 0; i < upRight.Count; i += 3)
+                {
+                    sumR += upRight[i];
+                    sumG += upRight[i + 1];
+                    sumB += upRight[i + 2];
+                }
+                avgR[1] = (byte)(sumR / (upRight.Count / 3));
+                avgG[1] = (byte)(sumG / (upRight.Count / 3));
+                avgB[1] = (byte)(sumB / (upRight.Count / 3));
+                sumR = sumG = sumB = 0;
+
+                for (int i = 0; i < downLeft.Count; i += 3)
+                {
+                    sumR += downLeft[i];
+                    sumG += downLeft[i + 1];
+                    sumB += downLeft[i + 2];
+                }
+                avgR[2] = (byte)(sumR / (downLeft.Count / 3));
+                avgG[2] = (byte)(sumG / (downLeft.Count / 3));
+                avgB[2] = (byte)(sumB / (downLeft.Count / 3));
+                sumR = sumG = sumB = 0;
+
+                for (int i = 0; i < downRight.Count; i += 3)
+                {
+                    sumR += downRight[i];
+                    sumG += downRight[i + 1];
+                    sumB += downRight[i + 2];
+                }
+                avgR[3] = (byte)(sumR / (downRight.Count / 3));
+                avgG[3] = (byte)(sumG / (downRight.Count / 3));
+                avgB[3] = (byte)(sumB / (downRight.Count / 3));
+
+                int minVal = Array.IndexOf(deviations, deviations.Min());
+                vs1[y * data.Stride + x] = avgR[minVal];
+                vs1[y * data.Stride + x+1] = avgG[minVal];
+                vs1[y * data.Stride + x+2] = avgB[minVal];
             }
-        }
-        Marshal.Copy(vs, 0, data.Scan0, vs.Length);
+
+        Marshal.Copy(vs1, 0, data.Scan0, vs1.Length);
         bitmap.UnlockBits(data);
 
         return bitmap;
     }
+
+    public static double getDeviation(List<byte> bruh)
+    {
+        double result = 0;
+
+        if (bruh.Any())
+        {
+            double avg = 0;
+            foreach(var b in bruh)
+            {
+                avg += b;
+            }
+            avg /= bruh.Count;
+            double sum = bruh.Sum(d => Math.Pow(d - avg, 2));
+            result = Math.Sqrt((sum) / bruh.Count());
+        }
+        return result;
+    }
+
     public static Bitmap MinRGB(Bitmap bitmap)
     {
         BitmapData data = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
@@ -333,14 +476,14 @@ public static class Algorithm
         {
             for (int j = 0; j < bitmap.Width * 3; j += 3)
             {
-                byte R = vs[i*bitmap.Width*3 + j];
+                byte R = vs[i * bitmap.Width * 3 + j];
                 byte G = vs[i * bitmap.Width * 3 + j + 1];
                 byte B = vs[i * bitmap.Width * 3 + j + 2];
                 var min = Math.Min(R, Math.Min(G, B));
                 if (R > min)
-                    R = 0; 
+                    R = 0;
                 if (G > min)
-                    G = 0; 
+                    G = 0;
                 if (B > min)
                     B = 0;
                 vs[i * bitmap.Width * 3 + j] = R;
@@ -353,4 +496,5 @@ public static class Algorithm
 
         return bitmap;
     }
+
 }
