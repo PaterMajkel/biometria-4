@@ -155,7 +155,7 @@ namespace biometria_4
             }
             Bitmap bitmap = new Bitmap(this.sourceImage.Width, this.sourceImage.Height);
             bitmap = (Bitmap)this.imageToEdit.Clone();
-            var pixel = Algorithm.Pixelation(bitmap, (int)Range.Value);
+            var pixel = Algorithm.Pixelation(bitmap, Range.Value % 2 == 1 ? (int)Range.Value + 1 : (int)Range.Value);
             var minRGB = Algorithm.MinRGB(pixel);
             double[,] matrixX = new double[,] { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
             double[,] matrixY = new double[,] { { 1, 2, 1 }, { 0, 0, 0 }, { -1, -2, -1 } };
