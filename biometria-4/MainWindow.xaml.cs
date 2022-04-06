@@ -67,7 +67,18 @@ namespace biometria_4
             }
             Bitmap bitmap = new Bitmap(this.sourceImage.Width, this.sourceImage.Height);
             bitmap = (Bitmap)this.imageToEdit.Clone();
-            FilteredImage.Source = ImageSourceFromBitmap(Algorithm.Pixelation(bitmap, Range.Value%2==1? (int)Range.Value+1 : (int)Range.Value));
+            FilteredImage.Source = ImageSourceFromBitmap(Algorithm.Pixelation(bitmap, Range.Value % 2 == 1 ? (int)Range.Value + 1 : (int)Range.Value));
+        }
+        private void Median_Click(object sender, RoutedEventArgs e)
+        {
+            if (sourceImage == null)
+            {
+                MessageBox.Show("You haven't uploaded any files", "Image error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            Bitmap bitmap = new Bitmap(this.sourceImage.Width, this.sourceImage.Height);
+            bitmap = (Bitmap)this.imageToEdit.Clone();
+            FilteredImage.Source = ImageSourceFromBitmap(Algorithm.Median(bitmap, Range.Value % 2 == 1 ? (int)Range.Value + 1 : (int)Range.Value));
         }
     }
 }

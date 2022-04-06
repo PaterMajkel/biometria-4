@@ -22,7 +22,7 @@
         <StackPanel Grid.Column="2" VerticalAlignment="Center">
             <Button Content="Gaussian"></Button>
             <Button Content="Sobel"></Button>
-            <Button Content="Median"></Button>
+            <Button Content="Median" Click="Median_Click"></Button>
             <Button Content="Pixelation" Click="Pixelation_Click"></Button>
             <Button Content="Kuvahar"></Button>
             <Button Content="Predator"></Button>
